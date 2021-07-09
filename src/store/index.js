@@ -5,9 +5,9 @@ import createPersistedState from "vuex-persistedstate";
 import SecureLS from "secure-ls";
 var ls = new SecureLS({ isCompression: false });
 
-import Axios from "axios";
-
 Vue.use(Vuex);
+
+import Axios from "axios";
 
 //----------RESOURCES-------------
 const baseURI = "https://api.themoviedb.org/3";
@@ -15,11 +15,14 @@ const keyPrefix = "?api_key=";
 const apiV3Key = "a6817d1e66ed3d6719d7f43eb77d2969";
 const keyQuery = keyPrefix + apiV3Key;
 const sessionPrefix = "&session_id=";
+const guestSessionPrefix = "&guest_session_id=";
 const apiconfiguration = baseURI + "/configuration";
 const SessionToken = baseURI + "/authentication/token/new";
 const CreateSession = baseURI + "/authentication/session/new";
 const DeleteSession = baseURI + "/authentication/session";
 const CreateGuestSession = baseURI + "/authentication/guest_session/new";
+const langPrefix = "&language="
+const languages = "/configuration/languages"
 const genres = { movie: "/genre/movie/list", tv: "/genre/tv/list" };
 
 const endpoint = {
@@ -36,9 +39,9 @@ const endpoint = {
   multiSearch: "/search/multi"
 };
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {
-    windowWidth: window.innerWidth,
+    Lang: "en",
     ApiConf: [],
     Token: null,
     Session: null,
@@ -64,8 +67,8 @@ export default new Vuex.Store({
     PersonImages: null
   },
   mutations: {
-    setWindowWidth(state) {
-      state.windowWidth = window.innerWidth;
+    updateLang(state, payload) {
+      state.Lang = payload.lang;
     },
     updateApiConf(state, payload) {
       state.ApiConf = payload.data;
@@ -346,6 +349,40 @@ export default new Vuex.Store({
         }
       });
     },
+    postRatingGetRatings({ dispatch }, payload) {
+      if (!this.state.CurrentSessionId) {
+        var optionalSesh = "";
+      }
+      else if (this.state.GuestSession) {
+        if (this.state.CurrentSessionId == this.state.GuestSession.guest_session_id)
+        optionalSesh = guestSessionPrefix + this.state.CurrentSessionId
+      }
+      else if (this.state.Session) {
+        if (this.state.CurrentSessionId == this.state.Session.session_id)
+        optionalSesh = sessionPrefix + this.state.CurrentSessionId
+      }
+      Axios.post(
+        baseURI +
+          "/" + payload.media_type + "/" +
+          payload.media_id +
+          "/rating" +
+          keyQuery +
+          optionalSesh,
+        {
+          value: payload.rating,
+        },
+        {
+          headers: {
+            Authorization: "Basic xxxxxxxxxxxxxxxxxxx",
+            "Content-Type": "application/json"
+          }
+        }
+      ).then(response => {
+        let ratingConfirmed = response.data;
+        console.log("rating Confirmation: ", ratingConfirmed);
+        dispatch("getRatings", { media_type: payload.media_type });
+      });
+    },
 
     reqDetails({ commit }, payload) {
       console.log("payload: ", payload);
@@ -532,6 +569,7 @@ export default new Vuex.Store({
     }
   },
   getters: {
+    getLang: state => state.Lang,
     getApiConf: state => state.ApiConf,
     getToken: state => state.Token,
     getSession: state => state.Session,
@@ -620,6 +658,7 @@ export default new Vuex.Store({
         removeItem: key => ls.remove(key)
       },
       paths: [
+        "Lang",
         "Session",
         "GuestSession",
         "CurrentSessionId",
@@ -627,8 +666,18 @@ export default new Vuex.Store({
         "FavoriteMovies",
         "FavoriteTv",
         "MovieGenres",
-        "TvGenres"
+        "TvGenres",
+        "search"
       ]
     })
   ]
 });
+
+Axios.interceptors.request.use(request => {
+  if (request.method == 'get'){
+    request.url = request.url + langPrefix + store.state.Lang;
+  }
+  return request;
+});
+
+export default store

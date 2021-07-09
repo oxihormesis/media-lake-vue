@@ -55,7 +55,7 @@
       </a>
     </section>
     <section class="p-5" name="person-credits">
-      <h1>Credits</h1>
+      <h1>{{$t('credits')}}</h1>
       <awesome-swiper
         :mediaItems="getCredits"
         :spaceBetweenProp="10"
@@ -115,8 +115,8 @@
                     id="showrunning"
                     title="last episode"
                     ><i class="fa fa-book"></i>
-                    {{ getDetails.number_of_seasons }} seasons
-                    {{ getDetails.number_of_episodes }} episodes</span
+                    {{ getDetails.number_of_seasons }} {{$t('seasons')}}
+                    {{ getDetails.number_of_episodes }} {{$t('episodes')}}</span
                   >
                 </span>
               </div>
@@ -126,7 +126,7 @@
                 v-if="getDetails.release_date"
                 class="px-4 py-2 mr-3"
                 id="year"
-                :title="getDetails.release_date"
+                :title="'Released ' + getDetails.release_date"
                 >{{ getDetails.release_date.slice(0, -6) }}</span
               >
               <span
@@ -147,9 +147,15 @@
       <a @click="$router.go(-1).catch(e => {})">
         <span id="back" class="fas fa-chevron-left"></span>
       </a>
+      <a id="rating-button" @click="giveRating" :title="media_type == 'tv' ? `Rate this ${media_type} show` : `Rate this ${media_type}`">
+        <span
+          class="far fa-star rate"
+          :class="{ active_rating: ratedBool }"
+        ></span>
+      </a>
       <a @click="toggleFavorite" title="Add To My List">
         <span
-          class="fas fa-heart favorite"
+          class="far fa-bookmark favorite"
           :class="{ active_favorite: favBool }"
         ></span>
       </a>
@@ -161,15 +167,15 @@
     </section>
     <section class="row py-5 justify-content-center" id="details">
       <div class="col-11 col-md-8 col-lg-4 mx-2" id="card">
-        <h2>Overview</h2>
+        <h2>{{$t('overview')}}</h2>
         <span>{{ getDetails.overview }}</span>
       </div>
       <div v-if="getDetails.revenue > 0" class="mx-2" id="card">
-        <h2>Revenue</h2>
+        <h2>{{$t('revenue')}}</h2>
         <div id="revenue">${{ numberWithCommas(getDetails.revenue) }}</div>
       </div>
-      <div v-if="media_type == 'tv'" class="m-5">
-        <h2>Streaming Now</h2>
+      <div v-if="media_type == 'tv' && getProviders.US.flatrate" class="m-5">
+        <h2>{{$t('streaming_now')}}</h2>
         <div
           v-for="provider in getProviders.US.flatrate"
           :key="provider.provider_id"
@@ -207,7 +213,7 @@
     </div>
     <div v-if="getReviews.length" class="container">
       <div class="row justify-content-around py-5" id="">
-        <h1>Reviews</h1>
+        <h1>{{$t('reviews')}}</h1>
         <article
           v-for="review in getReviews"
           :key="review.id"
@@ -259,6 +265,8 @@ export default {
       media_type: this.$route.params.media_type,
       id: this.$route.params.id,
       favBool: false,
+      ratedBool: false,
+      userRating: 8,
       showModal: false,
       onlyTmdbModal: false
     };
@@ -334,7 +342,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["reqDetails", "reqProviders", "postFavoriteGetFavorites"]),
+    ...mapActions(["reqDetails", "reqProviders", "postFavoriteGetFavorites", "postRatingGetRatings"]),
     async toggleFavorite() {
       if (this.getSession) {
         this.favBool = !this.favBool;
@@ -349,6 +357,14 @@ export default {
       } else {
         this.showModal = true;
       }
+    },
+    async giveRating() {
+        this.ratedBool = !this.ratedBool;
+        this.postRatingGetRatings({
+          media_type: this.$attrs.media_type,
+          media_id: this.$route.params.id,
+          rating: this.userRating
+        });
     },
     numberWithCommas(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -379,7 +395,7 @@ export default {
   background: rgba(0, 0, 0, 0.296);
 }
 #back,
-#back:focus,
+#back:focus, .rate,
 .favorite {
   font-size: 78px;
   cursor: pointer;
@@ -394,13 +410,21 @@ export default {
 #back:hover {
   color: rgb(204, 204, 204);
 }
-.favorite {
+.rate {
   color: rgba(255, 255, 255, 0.66);
   position: absolute;
   bottom: 0;
   right: 0;
-  margin-right: 130px;
+  margin-right: 115px;
   margin-bottom: 60px;
+}
+.favorite {
+  color: rgba(255, 255, 255, 0.66);
+  position: absolute;
+    top: 0;
+  right: 0;
+  margin-right: 130px;
+  margin-top: 30px;
 }
 .favorite:hover {
   color: white;
@@ -473,12 +497,17 @@ export default {
 h2 {
   font-size: 3vw;
 }
-#logo {
-  width: 100%;
-}
 #studios {
   color: black;
   background-color: #e6e6e6;
+}
+#studios div{
+  display: flex;
+  justify-content: center;
+}
+#studios img{
+  max-width: 100%;
+  max-height: 175px;
 }
 #review {
   background-color: rgba(67, 67, 67, 0.275);

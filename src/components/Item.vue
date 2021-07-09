@@ -10,7 +10,7 @@
       }"
     >
       <div class="poster pb-3">
-        <img
+        <img class="poster-image"
           :src="
             getApiConf.images.secure_base_url +
               getApiConf.images.poster_sizes[1] +
@@ -81,6 +81,11 @@ img {
 }
 #genre {
   float: left;
+}
+@media only screen and (max-width: 576px) {
+  .poster-image {
+    width: 110px;
+  }
 }
 @media only screen and (max-width: 100px) {
   img {

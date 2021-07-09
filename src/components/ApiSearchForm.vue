@@ -2,18 +2,22 @@
   <b-nav-form @submit.prevent="onSubmit">
     <div class="row no-gutters align-items-center">
       <div class="col">
-        <input
-          class="form-control rounded-pill pr-5"
-          id="search-input"
-          type="text"
-          v-model="search"
-          placeholder="Search content"
-        />
+          <input
+            ref="input"
+            class="form-control rounded-pill pr-5"
+            id="search-input"
+            type="text"
+            v-model="search"
+            :placeholder="$t('search_content')"
+            v-show="showInput"
+            @blur="handleBlur"
+          />
       </div>
       <div class="col-auto">
         <button
-          class="btn btn-outline-success text-dark border-0 rounded-pill ml-n5"
+          class="btn btn-outline-success text-dark border-0 rounded-pill"
           type="button"
+          @click="buttonHandler"
         >
           <i class="fa fa-search"></i>
         </button>
@@ -43,8 +47,34 @@ export default {
         BIconstack
     },*/
   name: "ApiSearchForm",
+  data() {
+    return {
+      search: "",
+      showInput: false
+    }
+  },
   methods: {
     ...mapActions({ searchTMDB: "search/searchTMDB" }),
+    buttonHandler(){
+      if(!this.showInput) {
+        this.showInput = true;
+        this.$nextTick(() => this.$refs.input.focus())
+      }
+      else if(this.showInput && !this.search) {
+        this.showInput = false;
+      }
+      else this.onSubmit()
+    },
+    handleBlur(e){
+      if(!this.search) {
+        e.target.placeholder = this.$t('still_be_here');
+        setTimeout(()=>{
+          this.showInput = false;
+          e.target.placeholder = this.$t('search_content')
+        },1500)
+      }
+      else this.showInput = false;
+    },
     onSubmit() {
       if (this.search === "") {
         return;
@@ -71,20 +101,25 @@ export default {
     //         console.log("movieItems: ", this.$store.state.movieItems);
     //     })
     // }
-  },
-  data() {
-    return {
-      search: ""
-    };
   }
 };
 </script>
 
 <style scoped>
+.slide-fade-enter-active, .slide-fade-leave-active {
+  transition: all 1.5s ease;
+  transition-property: width;
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
 input::placeholder,
 .fa-search {
   /* color: rgb(46, 46, 46); */
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.692);
   font-size: 1.2em;
 }
 #search-input {
@@ -98,14 +133,16 @@ input::placeholder,
   color: rgba(255, 255, 255);
   border-radius: 20pt;
   background: #ffffff2c;
+  margin-right: -2.8rem;
+  transition: display 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 #search-input:focus {
   box-shadow: 0 0 0 0.5rem rgba(55, 249, 212, 0.07);
 }
 .btn-outline-success {
-  background-color: #28a745;
+  background-color: #42b983;
 }
 .btn-outline-success:hover {
-  background-color: #1f8a38;
+  background-color: #279741;
 }
 </style>

@@ -4,8 +4,8 @@
       <router-link :to="{ name: 'Home' }"
         ><span
           style="display: inline-flex;
-  align-items: center;"
-          >FilmLake</span
+  align-items: center; margin-top: 4px;"
+          >{{ $t('filmlake')}}</span
         ></router-link
       >
     </b-navbar-brand>
@@ -14,45 +14,46 @@
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
     <b-collapse class="justify-content-end" id="nav-collapse" is-nav>
-      <b-navbar-nav class="main-link">
-        <api-search-form></api-search-form>
-      </b-navbar-nav>
+      
 
       <!-- Right aligned nav items -->
-      <b-navbar-nav style="align-items: center;">
-        <b-nav-item class="main-link" right>
+      <b-navbar-nav class="flex-grow-1 justify-content-end" style="align-items: center;">
+        <b-nav-item class="margin-right mr-auto" left>
+        <api-search-form></api-search-form>
+      </b-nav-item>
+        <b-nav-item class="margin-right" right>
           <router-link :to="{ name: 'Discover' }" style="font-size: 24px;">
             <span title="Discover" class="far fa-compass" id="discover"
-              ><span class="icon-text"> Discover</span></span
+              ><span class="icon-text"> {{ $t('discover')}}</span></span
             >
           </router-link>
         </b-nav-item>
-        <b-nav-item class="main-link" right>
+        <b-nav-item class="margin-right" right>
           <router-link :to="{ name: 'Favorites' }" style="font-size: 24px;">
             <span title="Favorites" class="far fa-bookmark"
-              ><span class="icon-text"> My List</span></span
+              ><span class="icon-text"> {{ $t('my_list')}}</span></span
             >
           </router-link>
         </b-nav-item>
-        <b-nav-item class="main-link" right>
+        <b-nav-item class="margin-right" right>
           <router-link :to="{ name: 'Ratings' }" style="font-size: 24px;">
-            <span title="Ratings" class="far fa-comment-alt"
-              ><span class="icon-text"> My Ratings</span></span
+            <span title="Ratings" class="far fa-star"
+              ><span class="icon-text"> {{ $t('my_ratings')}}</span></span
             >
           </router-link>
         </b-nav-item>
 
-        <b-nav-item-dropdown
+        <b-nav-item-dropdown class="user"
           v-if="getCurrentSessionId"
           :text="getAccount ? getAccount.username : 'Guest'"
           right
         >
-          <b-dropdown-item @click="DeleteSession">Log Out</b-dropdown-item>
+          <b-dropdown-item @click="DeleteSession">{{ $t('log_out')}}</b-dropdown-item>
         </b-nav-item-dropdown>
 
-        <b-nav-item right v-else-if="!getCurrentSessionId">
+        <b-nav-item class="user" right v-else-if="!getCurrentSessionId">
           <a id="show-modal" @click="showModal = true">
-            Sign In
+            <span>{{ $t('sign_in')}}</span>
           </a>
           <auth-modal v-if="showModal" @close="showModal = false"></auth-modal>
         </b-nav-item>
@@ -112,21 +113,16 @@ export default {
 .navbar-brand {
   font-family: Bebas-Neue;
   font-size: 36px;
-  color: #42b983;
-  a,
-  a:hover {
-    color: #42b983;
-  }
 }
-.navbar-toggler {
-  color: #42b983;
-}
+// .navbar-toggler {
+//   color: #42b983;
+// }
 .navbar-toggler,
 .navbar-toggler:hover,
 .navbar-toggler:focus {
   border: 0;
 }
-.main-link {
+.margin-right {
   margin-right: 40px;
 }
 .icon-text {
@@ -134,23 +130,36 @@ export default {
   vertical-align: middle;
   font-family: Metropolis-Regular, Avenir, Helvetica, Arial, sans-serif;
 }
+.user {
+  font-size: 16px;
+}
+#show-modal:hover {
+  color: rgb(168, 168, 168);
+}
+#show-modal{
+  color: lightgray;
+  padding: 10px;
+  border: 1px solid #42b983;
+  border-radius: 7px;
+}
 
 @media only screen and (max-width: 1472px) {
   .navbar {
     padding: 10px 25px;
   }
-  .main-link {
+  .margin-right {
     margin-right: 5px;
-    font-size: 18px;
+  }
+  .icon-text{
+    font-size: 16px;
   }
 }
 @media only screen and (max-width: 300px) {
   .navbar {
     padding: 0px 10px;
   }
-  .main-link {
+  .margin-right {
     margin-right: 5px;
-    font-size: 18px;
   }
 }
 </style>

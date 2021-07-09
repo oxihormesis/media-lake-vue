@@ -14,27 +14,27 @@
             <span class="material-icons-outlined">cancel</span>
           </button>
           <div class="p-0 mt-3 modal-header">
-            <h3>Sign In</h3>
+            <h3>{{$t('sign_in')}}</h3>
           </div>
           <div class="modal-body py-5">
             <button
-              title="Login with your account on The Movie Database"
+              :title="$t('tmdb_btn_title')"
               class="tmdb-button col-12  py-2"
               @click="signInAuth"
             >
               <img id="tmdb-logo" src="../assets/primary-short.svg" />
             </button>
           </div>
-          <p v-if="onlyTmdbModal">Sign in with TMDB to Favorite!</p>
+          <p v-if="onlyTmdbModal">{{$t('tmdb_to_fav')}}</p>
           <p v-if="!onlyTmdbModal">
-            - or -
+            - {{$t('or')}} -
           </p>
           <div
             v-if="!onlyTmdbModal"
             class="pb-3 justify-content-center modal-footer"
           >
             <button class="guest-button p-2" @click.prevent="newGuestSession">
-              Continue as Guest
+              {{$t('continue_as_guest')}}
             </button>
           </div>
         </div>
@@ -102,7 +102,7 @@ export default {
   margin: 20vh auto;
   padding: 40px 60px;
   color: rgb(215, 215, 215);
-  background-color: rgb(29, 51, 90);
+  background-color: #09252c;
   border-radius: 15px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
@@ -166,7 +166,7 @@ export default {
 .guest-button {
   color: #c6c6c6;
   border-radius: 4px;
-  background-color: rgb(29, 51, 90);
+  background-color: transparent;
   border: 1px solid #c6c6c6;
   filter: drop-shadow(2px 1px 15px rgb(0, 0, 0));
 }

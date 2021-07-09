@@ -3,7 +3,7 @@
     <section class="container py-5 justify-content-center">
       <div class="row" id="heading">
         <h1 class="py-3">
-          {{ $route.name }}
+          {{$t('discover')}}
         </h1>
       </div>
       <div class="row filters-row align-items-center py-4">
@@ -13,14 +13,14 @@
             class="media-btn btn-lg mr-1"
             :class="{ activeToggle: movieOrTv == 'movie' }"
           >
-            <span>Movie</span>
+            <span>{{$t('movie')}}</span>
           </button>
           <button
             @click="movieOrTv = 'tv'"
             class="media-btn btn-lg ml-1"
             :class="{ activeToggle: movieOrTv == 'tv' }"
           >
-            <span>Tv</span>
+            <span>{{$t('tv')}}</span>
           </button>
         </div>
         <div class="row filters-row-right align-items-center">
@@ -39,7 +39,7 @@
               class="input"
               id="sort"
             >
-              <option disabled value="">Sort By</option>
+              <option disabled value="">{{$t('sort_by')}}</option>
               <option v-for="option in sort_options" :key="option">{{
                 option
               }}</option>
@@ -49,7 +49,7 @@
             @submit.prevent="onSubmitYear"
             class="col-11 col-sm-3 col-md-2 col-lg-2"
           >
-            <input v-model="year" class="input" id="year" placeholder=" Year" />
+            <input v-model="year" class="input" id="year" :placeholder=" $t('year')" />
           </form>
         </div>
         <!-- <div class="col-11 col-md-4 col-lg-1">
@@ -66,7 +66,7 @@
         <button @click="prevPage" class="page-btn">
           <span> <i class="fas fa-caret-left"></i> Prev </span>
         </button>
-        <span>Page {{ this.page }}</span>
+        <span>{{$t('page')}} {{ this.page }}</span>
 
         <button @click="nextPage" class="page-btn">
           <span> Next <i class="fas fa-caret-right"></i> </span>
@@ -89,7 +89,7 @@
         <button @click="prevPage" class="page-btn btn-lg mr-1">
           <span> <i class="fas fa-caret-left"></i> Prev </span>
         </button>
-        <span>Page {{ this.page }}</span>
+        <span>{{$t('page')}} {{ this.page }}</span>
         <button @click="nextPage" class="page-btn btn-lg ml-1">
           <span> Next <i class="fas fa-caret-right"></i> </span>
         </button>

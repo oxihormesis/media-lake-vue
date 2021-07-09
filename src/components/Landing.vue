@@ -1,26 +1,32 @@
 <template>
-  <section class="container py-5">
+  <div>
+    <awesome-swiper
+    :hero="true"
+    :mediaItems="getHeroTrending"
+  ></awesome-swiper>
+  <section class="container-fluid swiper-container py-5">
     <div id="heading">
       <h1 class="py-3">
-        Recently Trending
+        {{$t('recently_trending')}}
       </h1>
     </div>
     <awesome-swiper
       :topBorderProp="true"
       :mediaItems="getMovieTrending"
-      sliderHeading="Movies"
+      :sliderHeading="$t('movie') + 's'"
     ></awesome-swiper>
     <awesome-swiper
       :topBorderProp="true"
       :mediaItems="getTvTrending"
-      sliderHeading="Tv"
+      :sliderHeading="$t('tv')"
     ></awesome-swiper>
     <awesome-swiper
       :topBorderProp="true"
       :mediaItems="getPeopleTrending"
-      sliderHeading="People"
+      :sliderHeading="$t('people')"
     ></awesome-swiper>
   </section>
+  </div>
 </template>
 
 <script>
@@ -37,15 +43,26 @@ export default {
     ...mapActions(["searchTrending"])
   },
   mounted() {
+    console.log("In landing view- logging a test of store.state.lang ", this.$store.state.Lang)
     this.searchTrending();
   },
   computed: {
-    ...mapGetters(["getMovieTrending", "getTvTrending", "getPeopleTrending"])
+    ...mapGetters(["getMovieTrending", "getTvTrending", "getPeopleTrending"]),
+    getHeroTrending(){
+    let heroItems = null;
+    heroItems = this.getMovieTrending.slice(0-3);
+    const addTv = this.getTvTrending.slice(0-3);
+    let items = heroItems.concat(addTv)
+    return items
   }
+  },
 };
 </script>
 
 <style scoped>
+.swiper-container{
+  padding: 12rem;
+}
 #heading {
   text-align: center;
   /* background: linear-gradient(
@@ -58,5 +75,15 @@ export default {
     )
     center bottom no-repeat;
   background-size: 20% 1px; */
+}
+@media only screen and (max-width: 1300px){
+  .swiper-container{
+  padding: 0 1rem;
+}
+}
+@media only screen and (max-width: 576px){
+  .swiper-container{
+  padding: 0 3px;
+}
 }
 </style>

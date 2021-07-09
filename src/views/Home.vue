@@ -1,6 +1,6 @@
 <template>
   <section class="home router-view">
-    <Landing/>
+    <Landing />
   </section>
 </template>
 

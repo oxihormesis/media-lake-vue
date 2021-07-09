@@ -6,12 +6,13 @@
     <main class="min-vh-100">
       <router-view />
     </main>
-    <b-nav-item-dropdown class="lang-selector" text="Lang" right>
-      <b-dropdown-item href="#"> EN</b-dropdown-item>
-      <b-dropdown-item href="#"> ES</b-dropdown-item>
-      <b-dropdown-item href="#"> FR</b-dropdown-item>
-      <b-dropdown-item href="#"> RU</b-dropdown-item>
-    </b-nav-item-dropdown>
+    <select class="lang-selector" text="Lang" v-model="selectedLang" @change="reloadPage">
+      <option disabled value="">Lang</option>
+      <option value="en"> eng</option>
+      <option value="es"> es</option>
+      <option value="fr"> fr</option>
+      <option value="ru"> ru</option>
+    </select>
     <main-footer></main-footer>
   </div>
 </template>
@@ -27,7 +28,7 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 
 import Navbar from "./components/Navbar.vue";
 import MainFooter from "./components/MainFooter.vue";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 
 export default {
   name: "App",
@@ -36,16 +37,25 @@ export default {
     Navbar
   },
   data: function() {
-    return {};
+    return {
+      selectedLang: "en"
+    };
   },
   computed: {
-    ...mapGetters(["getApiConf"]),
+    ...mapGetters(["getApiConf", "getLang"]),
     authSuccess() {
       return this.$route.query.request_token;
-    }
+    },
   },
   methods: {
-    ...mapActions(["reqApiConfs", "createSessionGetAccount", "reqSessionToken"])
+    ...mapActions(["reqApiConfs", "createSessionGetAccount", "reqSessionToken"]),
+    ...mapMutations(["updateLang"]),
+    reloadPage(){
+      window.location.reload()
+    }
+  },
+  mounted() {
+      this.getLang ? this.selectedLang = this.getLang : this.selectedLang
   },
   watch: {
     "$route.query": {
@@ -61,10 +71,12 @@ export default {
           console.log("TMDB Auth Not Yet Granted");
         }
       }
+    },
+    selectedLang(newVal){
+      this.updateLang({ lang: newVal })
     }
   },
   created() {
-    window.addEventListener("resize", this.$store.commit("setWindowWidth"));
     this.reqSessionToken();
   }
 };
@@ -135,16 +147,18 @@ a:hover {
   );
 }
 .lang-selector {
-  z-index: 998;
+  padding: 5px;
+  z-index: 99;
+  color: lightgray;
   background-color: rgba(0, 0, 0, 0.74);
   border: 1px solid grey;
   border-width: 1px 0 0 1px;
-  border-radius: 20px 0 0 0;
+  border-radius: 7px 7px 0 0;
   list-style: none;
   position: absolute;
   bottom: 0;
-  right: 0;
-  margin: 0 5px 5px 0;
+  right: 15px;
+  cursor: pointer;
 }
 .dropdown-toggle {
   color: rgb(187, 187, 187);
@@ -159,6 +173,7 @@ a:hover {
     color: white;
   }
 }
+    
 // [v-cloak] > * {
 //   display: none;
 // }

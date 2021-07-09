@@ -1,15 +1,15 @@
 <template>
   <div class="router-view">
     <section class="container py-5">
-      <h1 class="py-5">Results For '{{ $route.params.data }}'</h1>
+      <h1 class="py-5">{{$t('results_for')}} '{{ $route.params.data }}'</h1>
       <awesome-swiper
         :mediaItems="movieItems"
-        sliderHeading="Movies"
+        :sliderHeading="$t('movie')+'s'"
       ></awesome-swiper>
-      <awesome-swiper :mediaItems="tvItems" sliderHeading="Tv"></awesome-swiper>
+      <awesome-swiper :mediaItems="tvItems" :sliderHeading="$t('tv')"></awesome-swiper>
       <awesome-swiper
         :mediaItems="personItems"
-        sliderHeading="People"
+        :sliderHeading="$t('people')"
       ></awesome-swiper>
     </section>
   </div>
