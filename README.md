@@ -9,11 +9,17 @@ Live demo: [https://filmlake.netlify.app](https://filmlake.netlify.app)
 #### Features:
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:gem: Find the newest, hottest shows on the trending page
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:film_projector: Search for people, movies and tv shows
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:green_heart: Build a watchlist
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:star: Rate tv and movies
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:tv: Discover your next flick! Browse millions of media records
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:open_file_folder:  Filter by genre, year and type.
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:dizzy: Sort results by revenue, ratings, popularity, and release date
 
 #### Powered by one of the largest film databases in the world [https://tmdb.com](https://tmdb.com)
