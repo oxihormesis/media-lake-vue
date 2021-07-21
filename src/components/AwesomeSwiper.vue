@@ -201,6 +201,7 @@ export default {
   bottom: 30%;
   left: 10%;
   font-family: Bebas-Neue;
+  text-shadow: 1px 0 0 black,0 1px 0 black,-1px 0 0 black,0 -1px 0 black;
 }
 .wrapper{
   width: 100%;

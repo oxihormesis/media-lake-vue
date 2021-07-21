@@ -2,19 +2,23 @@
 
 ## A dashingly designed application for searching and discovering everything related to film!
 
-Live demo: [https://filmlake.xyz](https://filmlake.xyz)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/7dffeabf-6de0-40f9-bb6a-55044018dc41/deploy-status)](https://app.netlify.com/sites/filmlake/deploys)
+
+Live demo: [https://filmlake.netlify.app](https://filmlake.netlify.app)
 
 #### Features:
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:tv: Discover your next flick! Browse millions media of records
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:open_file_folder:  Filter by genre, year and type.
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:dizzy: Sort results by revenue, ratings, popularity, and release date!
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:gem: Find the newest, hottest shows on the trending page
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:film_projector: Search for people, movies and tv shows!
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:green_heart: Build a watchlist of your favorite shows!
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:star: Rate your watched tv and movies!
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:film_projector: Search for people, movies and tv shows
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:green_heart: Build a watchlist
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:star: Rate tv and movies
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:tv: Discover your next flick! Browse millions of media records
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:open_file_folder:  Filter by genre, year and type.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:dizzy: Sort results by revenue, ratings, popularity, and release date
 
 #### Powered by one of the largest film databases in the world [https://tmdb.com](https://tmdb.com)
+
+---
 
 ## Setup the project on your machine
 1. Clone this repo
@@ -27,25 +31,25 @@ npm install
 
 
 ## Run It Locally
-### 1. Start the development server
+#### 1. Start the development server
 In project directory, run:
     ```
     npm run serve
     ```
 
-### 2. Navigate to `localhost:8080` in your browser to see the project running locally!
+#### 2. Navigate to `localhost:8080` in your browser to see the project running locally!
 
-### 3. (optional) Expose local server for TMDB Authentication
+#### 3. (optional) Expose local server to web for TMDB Authentication
 If you want to perform any actions that require TMDB auth such as liking, rating, or reviewing movies, you must expose your development server to the internet using ngrok(or your favorite tunneling method, ngrok is great and free)
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. Download ngrok here [https://ngrok.com/download](https://ngrok.com/download)
+i. Download ngrok here [https://ngrok.com/download](https://ngrok.com/download)
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. Follow ngrok's installation instructions. Then in the directory where you unzipped ngrok:
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`ngrok http 8080 -host-header=rewrite`
+ii. Follow ngrok's installation instructions. Then in the directory where you unzipped ngrok:
+`ngrok http 8080 -host-header=rewrite`
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3. Finally, copy the `.env` file and rename it to `.env.development`. Update it's `VUE_APP_BASE_URL` environment variable with your ngrok domain
+iii. Finally, copy the `.env` file and name it `.env.development`. Update it's `VUE_APP_BASE_URL` environment variable with your ngrok domain
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4. Test out some auth-required features! Contribute to TMDB and rate a movie!
+iv. Test out some auth-required features- contribute to TMDB by rating a movie!
 
 ---------------------------
 
