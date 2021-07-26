@@ -1,7 +1,8 @@
 <template>
   <b-nav-form @submit.prevent="onSubmit">
     <div class="row no-gutters align-items-center">
-      <div class="col">
+      <transition name="slide-fade">
+        <div class="input_container col">
           <input
             ref="input"
             class="form-control rounded-pill pr-5"
@@ -12,7 +13,8 @@
             v-show="showInput"
             @blur="handleBlur"
           />
-      </div>
+        </div>
+      </transition>
       <div class="col-auto">
         <button
           class="btn btn-outline-success text-dark border-0 rounded-pill"
@@ -50,30 +52,27 @@ export default {
   data() {
     return {
       search: "",
-      showInput: false
-    }
+      showInput: false,
+    };
   },
   methods: {
     ...mapActions({ searchTMDB: "search/searchTMDB" }),
-    buttonHandler(){
-      if(!this.showInput) {
+    buttonHandler() {
+      if (!this.showInput) {
         this.showInput = true;
-        this.$nextTick(() => this.$refs.input.focus())
-      }
-      else if(this.showInput && !this.search) {
+        this.$nextTick(() => this.$refs.input.focus());
+      } else if (this.showInput && !this.search) {
         this.showInput = false;
-      }
-      else this.onSubmit()
+      } else this.onSubmit();
     },
-    handleBlur(e){
-      if(!this.search) {
-        e.target.placeholder = this.$t('still_be_here');
-        setTimeout(()=>{
+    handleBlur(e) {
+      if (!this.search) {
+        e.target.placeholder = this.$t("still_be_here");
+        setTimeout(() => {
           this.showInput = false;
-          e.target.placeholder = this.$t('search_content')
-        },1500)
-      }
-      else this.showInput = false;
+          e.target.placeholder = this.$t("search_content");
+        }, 1500);
+      } else this.showInput = false;
     },
     onSubmit() {
       if (this.search === "") {
@@ -83,10 +82,10 @@ export default {
       // this.searchTMDB(this.search)
       this.$router.push({
         name: "SearchResults",
-        params: { type: "multi", data: this.search }
+        params: { type: "multi", data: this.search },
       });
       this.search = "";
-    }
+    },
     //     searchTMDB: function (searchTerm) {
     //         this.$http.get(this.$store.state.baseURI + this.$store.state.endpoint.multiSearch + this.$store.state.keyPref+this.$store.state.apiV3Key + "&language=en-US&query=" + searchTerm + "&page=1&include_adult=false")
     //         .then((response) => {
@@ -101,12 +100,13 @@ export default {
     //         console.log("movieItems: ", this.$store.state.movieItems);
     //     })
     // }
-  }
+  },
 };
 </script>
 
 <style scoped>
-.slide-fade-enter-active, .slide-fade-leave-active {
+.slide-fade-enter-active,
+.slide-fade-leave-active {
   transition: all 1.5s ease;
   transition-property: width;
 }
@@ -114,6 +114,7 @@ export default {
 /* .slide-fade-leave-active below version 2.1.8 */ {
   transform: translateX(10px);
   opacity: 0;
+  width: 0;
 }
 
 input::placeholder,
@@ -123,6 +124,7 @@ input::placeholder,
   font-size: 1.2em;
 }
 #search-input {
+  box-shadow: 0;
   text-indent: 10px;
   height: 2.5rem;
   width: auto;
@@ -134,7 +136,7 @@ input::placeholder,
   border-radius: 20pt;
   background: #ffffff2c;
   margin-right: -2.8rem;
-  transition: display 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  /* transition: display 0.15s ease-in-out, box-shadow 0.15s ease-in-out; */
 }
 #search-input:focus {
   box-shadow: 0 0 0 0.5rem rgba(55, 249, 212, 0.07);

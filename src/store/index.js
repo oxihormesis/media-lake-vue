@@ -150,7 +150,7 @@ const store = new Vuex.Store({
     }
   },
   actions: {
-    reqApiConfs: function({ commit }) {
+    reqApiConfs: function ({ commit }) {
       Axios.get(apiconfiguration + keyQuery).then(response => {
         let images = response.data.images;
         let change_keys = response.data.change_keys;
@@ -163,7 +163,7 @@ const store = new Vuex.Store({
       let getGenres = mediaType => {
         Axios.get(baseURI + genres[mediaType] + keyQuery).then(response => {
           let genres = response.data.genres;
-          var genresReduced = genres.reduce(function(result, currentObject) {
+          var genresReduced = genres.reduce(function (result, currentObject) {
             result[currentObject.id] = currentObject.name;
             return result;
           }, {});
@@ -216,10 +216,10 @@ const store = new Vuex.Store({
     requestAccount({ commit }) {
       Axios.get(
         baseURI +
-          "/account" +
-          keyQuery +
-          sessionPrefix +
-          this.state.Session.session_id
+        "/account" +
+        keyQuery +
+        sessionPrefix +
+        this.state.Session.session_id
       ).then(response => {
         let account = response.data;
         console.log("account details: ", account);
@@ -296,12 +296,12 @@ const store = new Vuex.Store({
       }
       Axios.post(
         baseURI +
-          "/account" +
-          account_option +
-          "/favorite" +
-          keyQuery +
-          sessionPrefix +
-          this.state.CurrentSessionId,
+        "/account" +
+        account_option +
+        "/favorite" +
+        keyQuery +
+        sessionPrefix +
+        this.state.CurrentSessionId,
         {
           media_type: payload.media_type,
           media_id: payload.media_id,
@@ -328,13 +328,13 @@ const store = new Vuex.Store({
       let movieOrTv = payload.media_type == "movie" ? "/movies" : "/tv";
       Axios.get(
         baseURI +
-          "/account" +
-          account_option +
-          "/favorite" +
-          movieOrTv +
-          keyQuery +
-          sessionPrefix +
-          this.state.CurrentSessionId
+        "/account" +
+        account_option +
+        "/favorite" +
+        movieOrTv +
+        keyQuery +
+        sessionPrefix +
+        this.state.CurrentSessionId
       ).then(response => {
         let Favorites = response.data.results;
         console.log("Favorites: ", Favorites);
@@ -355,19 +355,19 @@ const store = new Vuex.Store({
       }
       else if (this.state.GuestSession) {
         if (this.state.CurrentSessionId == this.state.GuestSession.guest_session_id)
-        optionalSesh = guestSessionPrefix + this.state.CurrentSessionId
+          optionalSesh = guestSessionPrefix + this.state.CurrentSessionId
       }
       else if (this.state.Session) {
         if (this.state.CurrentSessionId == this.state.Session.session_id)
-        optionalSesh = sessionPrefix + this.state.CurrentSessionId
+          optionalSesh = sessionPrefix + this.state.CurrentSessionId
       }
       Axios.post(
         baseURI +
-          "/" + payload.media_type + "/" +
-          payload.media_id +
-          "/rating" +
-          keyQuery +
-          optionalSesh,
+        "/" + payload.media_type + "/" +
+        payload.media_id +
+        "/rating" +
+        keyQuery +
+        optionalSesh,
         {
           value: payload.rating,
         },
@@ -395,12 +395,12 @@ const store = new Vuex.Store({
         console.log(
           "details req: ",
           baseURI +
-            "/" +
-            payload.media_type +
-            "/" +
-            payload.id +
-            keyPrefix +
-            apiV3Key
+          "/" +
+          payload.media_type +
+          "/" +
+          payload.id +
+          keyPrefix +
+          apiV3Key
         );
         commit("updateDetails", { data: details });
         ////We can consider having a different mutation for each media type which provides better debugging and tracing as we're mutating a single store object with one action that utilizes 3+ different data resources(api endpoints)
@@ -414,13 +414,13 @@ const store = new Vuex.Store({
       if (payload.media_type == "person") {
         Axios.get(
           baseURI +
-            "/" +
-            payload.media_type +
-            "/" +
-            payload.id +
-            "/combined_credits" +
-            keyPrefix +
-            apiV3Key
+          "/" +
+          payload.media_type +
+          "/" +
+          payload.id +
+          "/combined_credits" +
+          keyPrefix +
+          apiV3Key
         ).then(response => {
           let credits = response.data.cast;
           console.log(credits);
@@ -428,62 +428,56 @@ const store = new Vuex.Store({
         });
         Axios.get(
           baseURI +
-            "/" +
-            payload.media_type +
-            "/" +
-            payload.id +
-            "/images" +
-            keyPrefix +
-            apiV3Key
+          "/" +
+          payload.media_type +
+          "/" +
+          payload.id +
+          "/images" +
+          keyPrefix +
+          apiV3Key
         ).then(response => {
           let images = response.data.profiles;
           console.log(images);
           commit("updatePersonImages", { data: images });
         });
       } else {
-        fetch(
+        Axios.get(
           baseURI +
-            "/" +
-            payload.media_type +
-            "/" +
-            payload.id +
-            endpoint.reviews +
-            keyPrefix +
-            apiV3Key
+          "/" +
+          payload.media_type +
+          "/" +
+          payload.id +
+          endpoint.reviews +
+          keyPrefix +
+          apiV3Key
         )
-          .then(function(response) {
-            return response.json();
-          })
-          .then(data => {
-            let reviews = data.results;
+          .then(response => {
+            let reviews = response.data.results;
             // console.log("reviews: ", reviews);
             commit("updateReviews", { data: reviews });
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.log("Reviews request failed", error);
           });
       }
     },
     reqProviders({ commit }, payload) {
-      fetch(
+      Axios.get(
         baseURI +
-          "/" +
-          payload.media_type +
-          "/" +
-          payload.id +
-          endpoint.providers +
-          keyPrefix +
-          apiV3Key
+        "/" +
+        payload.media_type +
+        "/" +
+        payload.id +
+        endpoint.providers +
+        keyPrefix +
+        apiV3Key
       )
-        .then(function(response) {
-          return response.json();
-        })
-        .then(data => {
-          let providers = data.results;
+        .then(response => {
+          let providers = response.data.results;
           // console.log("providers: ", providers);
           commit("updateProviders", { data: providers });
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log("Get watch providers request failed", error);
         });
     },
@@ -541,17 +535,17 @@ const store = new Vuex.Store({
       }
       Axios.get(
         baseURI +
-          "/discover/" +
-          mediaType +
-          keyPrefix +
-          apiV3Key +
-          "&language=en-US" +
-          "&sort_by=" +
-          payload.query +
-          "&include_adult=false&include_video=false&page=" +
-          payload.page +
-          year +
-          genresQuery
+        "/discover/" +
+        mediaType +
+        keyPrefix +
+        apiV3Key +
+        "&language=en-US" +
+        "&sort_by=" +
+        payload.query +
+        "&include_adult=false&include_video=false&page=" +
+        payload.page +
+        year +
+        genresQuery
       ).then(response => {
         const items = response.data.results.filter(
           item => item.poster_path != null
@@ -609,12 +603,12 @@ const store = new Vuex.Store({
         searchTMDB({ commit, state }, payload) {
           Axios.get(
             baseURI +
-              endpoint.multiSearch +
-              keyPrefix +
-              apiV3Key +
-              "&language=en-US&query=" +
-              payload.searchTerm +
-              "&page=1&include_adult=false"
+            endpoint.multiSearch +
+            keyPrefix +
+            apiV3Key +
+            "&language=en-US&query=" +
+            payload.searchTerm +
+            "&page=1&include_adult=false"
           ).then(response => {
             const items = response.data.results.filter(
               item => item.poster_path != null || item.profile_path != null
@@ -674,7 +668,7 @@ const store = new Vuex.Store({
 });
 
 Axios.interceptors.request.use(request => {
-  if (request.method == 'get'){
+  if (request.method == 'get') {
     request.url = request.url + langPrefix + store.state.Lang;
   }
   return request;

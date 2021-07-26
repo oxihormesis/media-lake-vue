@@ -14,27 +14,25 @@
             <span class="material-icons-outlined">cancel</span>
           </button>
           <div class="p-0 mt-3 modal-header">
-            <h3>{{$t('sign_in')}}</h3>
+            <h3>{{ $t("sign_in") }}</h3>
           </div>
           <div class="modal-body py-5">
             <button
               :title="$t('tmdb_btn_title')"
-              class="tmdb-button col-12  py-2"
+              class="tmdb-button col-12 py-2"
               @click="signInAuth"
             >
               <img id="tmdb-logo" src="../assets/primary-short.svg" />
             </button>
           </div>
-          <p v-if="onlyTmdbModal">{{$t('tmdb_to_fav')}}</p>
-          <p v-if="!onlyTmdbModal">
-            - {{$t('or')}} -
-          </p>
+          <p v-if="onlyTmdbModal">{{ $t("tmdb_to_fav") }}</p>
+          <p v-if="!onlyTmdbModal">- {{ $t("or") }} -</p>
           <div
             v-if="!onlyTmdbModal"
             class="pb-3 justify-content-center modal-footer"
           >
             <button class="guest-button p-2" @click.prevent="newGuestSession">
-              {{$t('continue_as_guest')}}
+              {{ $t("continue_as_guest") }}
             </button>
           </div>
         </div>
@@ -51,11 +49,11 @@ export default {
   props: ["onlyTmdbModal"],
   data() {
     return {
-      loadingNewGuestSession: false
+      loadingNewGuestSession: false,
     };
   },
   computed: {
-    ...mapGetters(["getToken", "getGuestSession"])
+    ...mapGetters(["getToken", "getGuestSession"]),
   },
   methods: {
     ...mapActions(["createGuestSession"]),
@@ -72,12 +70,12 @@ export default {
         "https://www.themoviedb.org/authenticate/" +
           this.getToken.request_token +
           "?redirect_to=" +
-          process.env.VUE_APP_BASE_URL +
+          process.env.VUE_APP_BASE_URL_LOCAL +
           this.$route.path,
         "_self"
       );
-    }
-  }
+    },
+  },
 };
 </script>
 

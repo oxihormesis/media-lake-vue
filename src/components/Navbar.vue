@@ -3,9 +3,8 @@
     <b-navbar-brand>
       <router-link :to="{ name: 'Home' }"
         ><span
-          style="display: inline-flex;
-  align-items: center; margin-top: 4px;"
-          >{{ $t('filmlake')}}</span
+          style="display: inline-flex; align-items: center; margin-top: 4px"
+          >{{ $t("filmlake") }}</span
         ></router-link
       >
     </b-navbar-brand>
@@ -14,58 +13,53 @@
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
     <b-collapse class="justify-content-end" id="nav-collapse" is-nav>
-      
-
       <!-- Right aligned nav items -->
-      <b-navbar-nav class="flex-grow-1 justify-content-end" style="align-items: center;">
+      <b-navbar-nav
+        class="flex-grow-1 justify-content-end"
+        style="align-items: center"
+      >
         <b-nav-item class="margin-right mr-auto" left>
-        <api-search-form></api-search-form>
-      </b-nav-item>
+          <api-search-form></api-search-form>
+        </b-nav-item>
         <b-nav-item class="margin-right" right>
-          <router-link :to="{ name: 'Discover' }" style="font-size: 24px;">
+          <router-link :to="{ name: 'Discover' }" style="font-size: 24px">
             <span title="Discover" class="far fa-compass" id="discover"
-              ><span class="icon-text"> {{ $t('discover')}}</span></span
+              ><span class="icon-text"> {{ $t("discover") }}</span></span
             >
           </router-link>
         </b-nav-item>
         <b-nav-item class="margin-right" right>
-          <router-link :to="{ name: 'Favorites' }" style="font-size: 24px;">
+          <router-link :to="{ name: 'Favorites' }" style="font-size: 24px">
             <span title="Favorites" class="far fa-bookmark"
-              ><span class="icon-text"> {{ $t('my_list')}}</span></span
+              ><span class="icon-text"> {{ $t("my_list") }}</span></span
             >
           </router-link>
         </b-nav-item>
         <b-nav-item class="margin-right" right>
-          <router-link :to="{ name: 'Ratings' }" style="font-size: 24px;">
+          <router-link :to="{ name: 'Ratings' }" style="font-size: 24px">
             <span title="Ratings" class="far fa-star"
-              ><span class="icon-text"> {{ $t('my_ratings')}}</span></span
+              ><span class="icon-text"> {{ $t("my_ratings") }}</span></span
             >
           </router-link>
         </b-nav-item>
 
-        <b-nav-item-dropdown class="user"
+        <b-nav-item-dropdown
+          class="user"
           v-if="getCurrentSessionId"
           :text="getAccount ? getAccount.username : 'Guest'"
           right
         >
-          <b-dropdown-item @click="DeleteSession">{{ $t('log_out')}}</b-dropdown-item>
+          <b-dropdown-item @click="DeleteSession">{{
+            $t("log_out")
+          }}</b-dropdown-item>
         </b-nav-item-dropdown>
 
         <b-nav-item class="user" right v-else-if="!getCurrentSessionId">
           <a id="show-modal" @click="showModal = true">
-            <span>{{ $t('sign_in')}}</span>
+            <span>{{ $t("sign_in") }}</span>
           </a>
           <auth-modal v-if="showModal" @close="showModal = false"></auth-modal>
         </b-nav-item>
-
-        <!-- <b-nav-item-dropdown right>
-          Using 'button-content' slot
-          <template #button-content>
-            <span>User</span>
-          </template>
-          <b-dropdown-item href="#">Profile</b-dropdown-item>
-          <b-dropdown-item href="#">Sign Out</b-dropdown-item>
-        </b-nav-item-dropdown> -->
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>
@@ -79,19 +73,19 @@ import { mapActions, mapGetters } from "vuex";
 export default {
   components: {
     ApiSearchForm,
-    AuthModal
+    AuthModal,
   },
-  data: function() {
+  data: function () {
     return {
-      showModal: false
+      showModal: false,
     };
   },
   computed: {
-    ...mapGetters(["getCurrentSessionId", "getAccount"])
+    ...mapGetters(["getCurrentSessionId", "getAccount"]),
   },
   methods: {
-    ...mapActions(["DeleteSession"])
-  }
+    ...mapActions(["DeleteSession"]),
+  },
 };
 </script>
 
@@ -136,7 +130,7 @@ export default {
 #show-modal:hover {
   color: rgb(168, 168, 168);
 }
-#show-modal{
+#show-modal {
   color: lightgray;
   padding: 10px;
   border: 1px solid #42b983;
@@ -150,13 +144,16 @@ export default {
   .margin-right {
     margin-right: 5px;
   }
-  .icon-text{
+  .icon-text {
     font-size: 16px;
   }
 }
 @media only screen and (max-width: 300px) {
   .navbar {
     padding: 0px 10px;
+  }
+  #nav-collapse {
+    padding-bottom: 10px;
   }
   .margin-right {
     margin-right: 5px;

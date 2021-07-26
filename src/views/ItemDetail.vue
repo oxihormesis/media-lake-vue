@@ -9,8 +9,8 @@
         id="hero-image"
         :src="
           img.secure_base_url +
-            img.backdrop_sizes[3] +
-            getCredits[0].backdrop_path
+          img.backdrop_sizes[3] +
+          getCredits[0].backdrop_path
         "
       />
       <div class="img-overlay"></div>
@@ -25,11 +25,7 @@
           <div class="row">
             <div class="col-12 text-left">
               <div>
-                <span
-                  id="title"
-                  class="px-4 py-2"
-                  style="font-size: 4vw"
-                  title="name"
+                <span id="title" class="px-4 py-2" title="name"
                   >{{ getDetails.name }}
                 </span>
                 <span>{{
@@ -50,12 +46,12 @@
           </div>
         </div>
       </div>
-      <a @click="$router.go(-1).catch(e => {})">
+      <a @click="$router.go(-1).catch((e) => {})">
         <span id="back" class="fas fa-chevron-left"></span>
       </a>
     </section>
     <section class="p-5" name="person-credits">
-      <h1>{{$t('credits')}}</h1>
+      <h1>{{ $t("credits") }}</h1>
       <awesome-swiper
         :mediaItems="getCredits"
         :spaceBetweenProp="10"
@@ -83,48 +79,37 @@
       />
       <div class="img-overlay"></div>
       <div class="row" id="hero-banner">
-        <div class="col-2">
+        <div id="poster_container" class="col-5 col-sm-4 col-md-3">
           <img
             class="poster"
             :src="
               img.base_url +
-                img.poster_sizes[1] +
-                (getDetails.poster_path || getDetails.profile_path)
+              img.poster_sizes[3] +
+              (getDetails.poster_path || getDetails.profile_path)
             "
           />
         </div>
-        <div class="col-10">
-          <div class="row">
-            <div class="col-12 text-left">
-              <div>
-                <span
-                  id="title"
-                  class="px-4 py-2"
-                  style="font-size: 4vw"
-                  title="title"
-                  >{{ getDetails.title || getDetails.name }}
-                  <span
-                    v-if="media_type == 'movie'"
-                    id="runtime"
-                    title="runtime"
-                    ><i class="far fa-clock"></i>
-                    {{ runtime(getDetails.runtime) }}</span
-                  >
-                  <span
-                    v-if="media_type == 'tv'"
-                    id="showrunning"
-                    title="last episode"
-                    ><i class="fa fa-book"></i>
-                    {{ getDetails.number_of_seasons }} {{$t('seasons')}}
-                    {{ getDetails.number_of_episodes }} {{$t('episodes')}}</span
-                  >
-                </span>
-              </div>
+        <div class="col-md-9 col-sm-8">
+          <div class="row align-items-center">
+            <span id="title" class="pt-2" title="title"
+              >{{ getDetails.title || getDetails.name }}
+            </span>
+            <span v-if="media_type == 'movie'" id="runtime" title="runtime"
+              ><i class="far fa-clock"></i>
+              {{ runtime(getDetails.runtime) }}</span
+            >
+            <div class="col-12 text-left p-0">
+              <span v-if="media_type == 'tv'" id="showrunning" title="ran for"
+                ><i class="fa fa-book"></i> {{ getDetails.number_of_seasons }}
+                {{ $t("seasons") }} /
+                {{ getDetails.number_of_episodes }}
+                {{ $t("episodes") }}</span
+              >
             </div>
-            <div class="col-12 text-left mt-4 mr-3">
+            <div class="col-12 text-left">
               <span
                 v-if="getDetails.release_date"
-                class="px-4 py-2 mr-3"
+                class="mr-3"
                 id="year"
                 :title="'Released ' + getDetails.release_date"
                 >{{ getDetails.release_date.slice(0, -6) }}</span
@@ -140,25 +125,33 @@
                 ><i class="fa fa-star"></i> {{ getDetails.vote_average }}</span
               >
             </div>
-            <div class="col text-left mt-4"></div>
           </div>
         </div>
       </div>
-      <a @click="$router.go(-1).catch(e => {})">
-        <span id="back" class="fas fa-chevron-left"></span>
+      <a
+        id="back"
+        class="fas fa-chevron-left"
+        @click="$router.go(-1).catch((e) => {})"
+      >
       </a>
-      <a id="rating-button" @click="giveRating" :title="media_type == 'tv' ? `Rate this ${media_type} show` : `Rate this ${media_type}`">
-        <span
-          class="far fa-star rate"
-          :class="{ active_rating: ratedBool }"
-        ></span>
+      <a
+        id="rating-button"
+        class="far fa-star rate"
+        :class="{ active_rating: ratedBool }"
+        @click="giveRating"
+        :title="
+          media_type == 'tv'
+            ? `Rate this ${media_type} show`
+            : `Rate this ${media_type}`
+        "
+      >
       </a>
-      <a @click="toggleFavorite" title="Add To My List">
-        <span
-          class="far fa-bookmark favorite"
-          :class="{ active_favorite: favBool }"
-        ></span>
-      </a>
+      <a
+        @click="toggleFavorite"
+        class="far fa-bookmark favorite"
+        :class="{ active_favorite: favBool }"
+        title="Add To My List"
+      ></a>
       <auth-modal
         v-if="showModal"
         @close="showModal = false"
@@ -166,28 +159,32 @@
       ></auth-modal>
     </section>
     <section class="row py-5 justify-content-center" id="details">
-      <div class="col-11 col-md-8 col-lg-4 mx-2" id="card">
-        <h2>{{$t('overview')}}</h2>
+      <div class="col-11 col-md-8 col-xl-5 mx-2" id="card">
+        <h2>{{ $t("overview") }}</h2>
         <span>{{ getDetails.overview }}</span>
       </div>
       <div v-if="getDetails.revenue > 0" class="mx-2" id="card">
-        <h2>{{$t('revenue')}}</h2>
+        <h2>{{ $t("revenue") }}</h2>
         <div id="revenue">${{ numberWithCommas(getDetails.revenue) }}</div>
       </div>
-      <div v-if="media_type == 'tv' && getProviders.US.flatrate" class="m-5">
-        <h2>{{$t('streaming_now')}}</h2>
-        <div
-          v-for="provider in getProviders.US.flatrate"
-          :key="provider.provider_id"
-          class="col-12 col-md-5 col-lg-3 pb-2 align-middle"
-        >
-          <img
-            v-if="provider.logo_path"
-            id="logo"
-            :src="img.base_url + img.logo_sizes[4] + provider.logo_path"
-            :title="provider.provider_name"
-          />
-          <h3 v-else>{{ company.name }}</h3>
+      <div
+        v-if="media_type == 'tv' && getProviders.US.flatrate"
+        class="col-11 col-md-8 col-xl-5 m-5"
+      >
+        <h2>{{ $t("streaming_now") }}</h2>
+        <div class="row">
+          <div
+            v-for="provider in getProviders.US.flatrate"
+            :key="provider.provider_id"
+            class="col-6 col-sm-3 col-md-2 col-lg-2 pb-2 align-middle"
+          >
+            <img
+              v-if="provider.logo_path"
+              id="logo"
+              :src="img.base_url + img.logo_sizes[1] + provider.logo_path"
+              :title="provider.provider_name"
+            />
+          </div>
         </div>
       </div>
     </section>
@@ -213,7 +210,7 @@
     </div>
     <div v-if="getReviews.length" class="container">
       <div class="row justify-content-around py-5" id="">
-        <h1>{{$t('reviews')}}</h1>
+        <h1>{{ $t("reviews") }}</h1>
         <article
           v-for="review in getReviews"
           :key="review.id"
@@ -227,8 +224,8 @@
                 id="profile"
                 :src="
                   img.base_url +
-                    img.profile_sizes[0] +
-                    review.author_details.avatar_path
+                  img.profile_sizes[0] +
+                  review.author_details.avatar_path
                 "
                 alt=""
               />
@@ -258,7 +255,7 @@ export default {
   name: "ItemDetail",
   components: {
     AwesomeSwiper,
-    AuthModal
+    AuthModal,
   },
   data() {
     return {
@@ -268,18 +265,18 @@ export default {
       ratedBool: false,
       userRating: 8,
       showModal: false,
-      onlyTmdbModal: false
+      onlyTmdbModal: false,
     };
   },
   mounted() {
     this.reqDetails({
       media_type: this.media_type,
-      id: this.id
+      id: this.id,
     });
     if (this.media_type == "tv") {
       this.reqProviders({
         media_type: this.media_type,
-        id: this.id
+        id: this.id,
       });
     }
     if (this.media_type !== "person") {
@@ -322,7 +319,7 @@ export default {
           }
         }
       } else this.favBool = false;
-    }
+    },
   },
   computed: {
     ...mapGetters([
@@ -335,21 +332,26 @@ export default {
       "getCredits",
       "getPersonImages",
       "getFavoriteMovies",
-      "getFavoriteTv"
+      "getFavoriteTv",
     ]),
     img() {
       return this.getApiConf.images;
-    }
+    },
   },
   methods: {
-    ...mapActions(["reqDetails", "reqProviders", "postFavoriteGetFavorites", "postRatingGetRatings"]),
+    ...mapActions([
+      "reqDetails",
+      "reqProviders",
+      "postFavoriteGetFavorites",
+      "postRatingGetRatings",
+    ]),
     async toggleFavorite() {
       if (this.getSession) {
         this.favBool = !this.favBool;
         this.postFavoriteGetFavorites({
           media_type: this.$attrs.media_type,
           media_id: this.$route.params.id,
-          favorite: this.favBool
+          favorite: this.favBool,
         });
       } else if (this.getCurrentSessionId) {
         this.showModal = true;
@@ -359,12 +361,12 @@ export default {
       }
     },
     async giveRating() {
-        this.ratedBool = !this.ratedBool;
-        this.postRatingGetRatings({
-          media_type: this.$attrs.media_type,
-          media_id: this.$route.params.id,
-          rating: this.userRating
-        });
+      this.ratedBool = !this.ratedBool;
+      this.postRatingGetRatings({
+        media_type: this.$attrs.media_type,
+        media_id: this.$route.params.id,
+        rating: this.userRating,
+      });
     },
     numberWithCommas(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -382,8 +384,8 @@ export default {
       } else if (time < 60) {
         return time + "mins";
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -395,20 +397,22 @@ export default {
   background: rgba(0, 0, 0, 0.296);
 }
 #back,
-#back:focus, .rate,
+#back:focus,
+.rate,
 .favorite {
   font-size: 78px;
   cursor: pointer;
 }
 #back {
-  color: white;
+  color: rgb(204, 204, 204);
   position: absolute;
   top: 0;
   left: 0;
   margin: 30px;
+  transition: color 0.5s ease-in-out;
 }
 #back:hover {
-  color: rgb(204, 204, 204);
+  color: white;
 }
 .rate {
   color: rgba(255, 255, 255, 0.66);
@@ -417,16 +421,19 @@ export default {
   right: 0;
   margin-right: 115px;
   margin-bottom: 60px;
+  transition: color 0.5s ease-in-out;
 }
 .favorite {
   color: rgba(255, 255, 255, 0.66);
   position: absolute;
-    top: 0;
+  top: 0;
   right: 0;
   margin-right: 130px;
   margin-top: 30px;
+  transition: color 0.5s ease-in-out;
 }
-.favorite:hover {
+.favorite:hover,
+.rate:hover {
   color: white;
 }
 .active_favorite {
@@ -447,21 +454,25 @@ export default {
   width: auto;
   position: relative;
 }
+#poster_container {
+  text-align: center;
+}
 .poster {
+  width: 100%;
   border-radius: 15px;
   position: relative;
 }
 #hero-banner {
-  font-size: 4vw;
+  font-size: 4rem;
   line-height: 1;
   color: white;
   position: absolute;
-  top: 50%;
+  top: 20%;
   left: 10%;
   z-index: 2;
 }
 #profile-pic {
-  font-size: 4vw;
+  font-size: 4rem;
   line-height: 1;
   color: white;
   position: absolute;
@@ -470,16 +481,19 @@ export default {
   z-index: 2;
 }
 #title {
-  font-size: 4vw;
+  font-size: 4rem;
   /* background-color: rgba(0, 0, 0, 0.741); */
 }
 #runtime,
 #showrunning {
-  font-size: 1.5vw;
+  font-size: 1.5rem;
+}
+#runtime {
+  padding-left: 1rem;
 }
 #year,
 #rating {
-  font-size: 3vw;
+  font-size: 2rem;
   /* background-color: rgba(0, 0, 0, 0.741); */
 }
 
@@ -492,20 +506,17 @@ export default {
   padding: 5rem;
 }
 #revenue {
-  font-size: 4vw;
-}
-h2 {
-  font-size: 3vw;
+  font-size: 4rem;
 }
 #studios {
   color: black;
   background-color: #e6e6e6;
 }
-#studios div{
+#studios div {
   display: flex;
   justify-content: center;
 }
-#studios img{
+#studios img {
   max-width: 100%;
   max-height: 175px;
 }
@@ -517,5 +528,53 @@ h2 {
   width: 45px;
   height: 45px;
   border-radius: 50%;
+}
+@media (min-width: 575; max-width: 768px) {
+  #title {
+    font-size: 3rem;
+  }
+  .favorite {
+    top: unset;
+    bottom: 0;
+    left: 0;
+    margin: 0;
+    margin-left: 115px;
+    margin-bottom: 60px;
+  }
+}
+@media (max-width: 575px) {
+  #hero-banner {
+    padding-top: 40px;
+    padding-right: 25px;
+  }
+  #poster_container {
+    padding-left: 0;
+    text-align: left;
+  }
+  #title {
+    font-size: 2.5rem;
+  }
+  #runtime {
+    font-size: 1rem;
+    padding: 0;
+    padding-top: 15px;
+  }
+  .favorite,
+  .rate {
+    font-size: 3rem;
+    margin-right: 30px;
+  }
+  .rate {
+    margin-bottom: 30px;
+  }
+  #card {
+    padding: 3rem;
+  }
+}
+@media (max-width: 1200px) {
+  #year,
+  #rating {
+    font-size: 1.75rem;
+  }
 }
 </style>
