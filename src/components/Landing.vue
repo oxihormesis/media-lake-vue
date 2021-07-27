@@ -76,6 +76,11 @@ export default {
     center bottom no-repeat;
   background-size: 20% 1px; */
 }
+@media only screen and (max-width: 1600px){
+  .swiper-container{
+  padding: 0 5rem;
+}
+}
 @media only screen and (max-width: 1300px){
   .swiper-container{
   padding: 0 1rem;
