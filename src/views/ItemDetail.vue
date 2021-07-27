@@ -60,10 +60,25 @@
     </section>
     <div class="container-fluid">
       <div class="row justify-content-center">
-        <div class="col-11 col-md-8">{{ getDetails.biography }}</div>
-        <div class="col-11 pt-5">
-          <a :href="'https://www.imdb.com/name/' + getDetails.imdb_id">
-            <img src="../assets/imdb.png" style="height: 30px" />
+        <div id="biography-card" class="card col-11 col-md-7">
+          <h2>Biography</h2>
+          <p id="biography">{{ getDetails.biography }}</p>
+        </div>
+        <div
+          class="
+            col-11 col-md-4
+            pt-5
+            d-flex
+            justify-content-center
+            align-items-center
+          "
+        >
+          <a
+            target="_blank"
+            rel="”noreferrer”"
+            :href="'https://www.imdb.com/name/' + getDetails.imdb_id"
+          >
+            <img src="../assets/imdb.png" style="height: 140px" />
           </a>
         </div>
       </div>
@@ -138,14 +153,30 @@
         id="rating-button"
         class="far fa-star rate"
         :class="{ active_rating: ratedBool }"
-        @click="giveRating"
+        @click="showRatingModal = true"
         :title="
           media_type == 'tv'
             ? `Rate this ${media_type} show`
             : `Rate this ${media_type}`
         "
       >
+        <div id="user-rating-label">{{ userRating }}</div>
       </a>
+      <modal v-if="showRatingModal" @close="showRatingModal = false">
+        <template v-slot:header
+          >Rate {{ getDetails.name || getDetails.title }}!</template
+        >
+        <template v-slot:customContent1>
+          <star-rating
+            @rating-selected="setRating"
+            v-model="userRating"
+            :increment="0.5"
+            :rating="getDetails.vote_average"
+            :max-rating="10"
+            :star-size="25"
+          ></star-rating>
+        </template>
+      </modal>
       <a
         @click="toggleFavorite"
         class="far fa-bookmark favorite"
@@ -153,17 +184,17 @@
         title="Add To My List"
       ></a>
       <auth-modal
-        v-if="showModal"
-        @close="showModal = false"
+        v-if="showAuthModal"
+        @close="showAuthModal = false"
         :onlyTmdbModal="onlyTmdbModal"
       ></auth-modal>
     </section>
     <section class="row py-5 justify-content-center" id="details">
-      <div class="col-11 col-md-8 col-xl-5 mx-2" id="card">
+      <div class="card col-11 col-md-8 col-xl-5 mx-2" id="overview-card">
         <h2>{{ $t("overview") }}</h2>
         <span>{{ getDetails.overview }}</span>
       </div>
-      <div v-if="getDetails.revenue > 0" class="mx-2" id="card">
+      <div v-if="getDetails.revenue > 0" class="mx-2" id="revenue-card">
         <h2>{{ $t("revenue") }}</h2>
         <div id="revenue">${{ numberWithCommas(getDetails.revenue) }}</div>
       </div>
@@ -250,12 +281,16 @@
 import { mapActions, mapGetters } from "vuex";
 import AwesomeSwiper from "../components/AwesomeSwiper.vue";
 import AuthModal from "../components/AuthModal.vue";
+import Modal from "../components/Modal.vue";
+import StarRating from "vue-star-rating";
 
 export default {
   name: "ItemDetail",
   components: {
     AwesomeSwiper,
     AuthModal,
+    Modal,
+    StarRating,
   },
   data() {
     return {
@@ -263,8 +298,9 @@ export default {
       id: this.$route.params.id,
       favBool: false,
       ratedBool: false,
-      userRating: 8,
-      showModal: false,
+      userRating: null,
+      showAuthModal: false,
+      showRatingModal: false,
       onlyTmdbModal: false,
     };
   },
@@ -297,6 +333,26 @@ export default {
           }
         }
       } else this.favBool = false;
+
+      if (this.getRatedMovies) {
+        let ratedMovies = this.getRatedMovies;
+        for (let i = 0; i < ratedMovies.length; i++) {
+          if (ratedMovies[i].id == this.id) {
+            this.ratedBool = true;
+            this.userRating = ratedMovies[i].rating;
+          }
+        }
+      } else this.ratedBool = false;
+
+      if (this.getRatedTv) {
+        let ratedTv = this.getRatedTv;
+        for (let i = 0; i < ratedTv.length; i++) {
+          if (ratedTv[i].id == this.id) {
+            this.ratedBool = true;
+            this.userRating = ratedTv[i].rating;
+          }
+        }
+      } else this.ratedBool = false;
     }
   },
   watch: {
@@ -320,6 +376,13 @@ export default {
         }
       } else this.favBool = false;
     },
+    // userRating(newVal) {
+    //   this.postRatingGetRatings({
+    //     rating: newVal,
+    //     media_type: this.$route.params.media_type,
+    //     media_id: this.id,
+    //   });
+    // },
   },
   computed: {
     ...mapGetters([
@@ -333,6 +396,8 @@ export default {
       "getPersonImages",
       "getFavoriteMovies",
       "getFavoriteTv",
+      "getRatedTv",
+      "getRatedMovies",
     ]),
     img() {
       return this.getApiConf.images;
@@ -354,19 +419,33 @@ export default {
           favorite: this.favBool,
         });
       } else if (this.getCurrentSessionId) {
-        this.showModal = true;
+        this.showAuthModal = true;
         this.onlyTmdbModal = true;
       } else {
-        this.showModal = true;
+        this.showAuthModal = true;
       }
     },
-    async giveRating() {
-      this.ratedBool = !this.ratedBool;
-      this.postRatingGetRatings({
-        media_type: this.$attrs.media_type,
-        media_id: this.$route.params.id,
-        rating: this.userRating,
-      });
+    // async giveRating() {
+    //   this.ratedBool = !this.ratedBool;
+    //   this.postRatingGetRatings({
+    //     media_type: this.$attrs.media_type,
+    //     media_id: this.$route.params.id,
+    //     rating: this.userRating,
+    //   });
+    // },
+    setRating: function (userSubmittedRating) {
+      if (this.getSession) {
+        if (this.getCurrentSessionId) {
+          this.postRatingGetRatings({
+            rating: userSubmittedRating,
+            media_type: this.$route.params.media_type,
+            media_id: this.id,
+          });
+          this.ratedBool = true;
+        }
+      } else {
+        this.showAuthModal = true;
+      }
     },
     numberWithCommas(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -436,12 +515,24 @@ export default {
 .rate:hover {
   color: white;
 }
-.active_favorite {
+.active_favorite,
+.active_rating {
   color: #42b983;
   text-shadow: 0 0 1.5rem #42b983;
 }
-.active_favorite:hover {
+.active_favorite:hover,
+.active_rating:hover {
   color: #379c6f;
+}
+#user-rating-label {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 2rem;
+  position: absolute;
+  width: 60px;
+  text-align: center;
+  left: 13px;
+  top: 75px;
 }
 .img-overlay {
   height: 100%;
@@ -480,6 +571,18 @@ export default {
   left: 10%;
   z-index: 2;
 }
+#biography-card h2 {
+  font-size: 2.5rem;
+}
+#biography {
+  line-height: 2;
+}
+#biography::first-line {
+  font-size: 1.5rem;
+}
+#biography::first-letter {
+  font-size: 2.5rem;
+}
 #title {
   font-size: 4rem;
   /* background-color: rgba(0, 0, 0, 0.741); */
@@ -500,13 +603,14 @@ export default {
 #details {
   color: #fff;
 }
-#card {
+.card {
   background-color: rgba(67, 67, 67, 0.275);
   border-radius: 20pt;
   padding: 5rem;
 }
-#revenue {
+#revenue-card {
   font-size: 4rem;
+  padding: 5rem;
 }
 #studios {
   color: black;
@@ -529,12 +633,13 @@ export default {
   height: 45px;
   border-radius: 50%;
 }
-@media (min-width: 575; max-width: 768px) {
+@media screen and (min-width: 575px) and (max-width: 768px) {
   #title {
     font-size: 3rem;
   }
   .favorite {
     top: unset;
+    right: unset;
     bottom: 0;
     left: 0;
     margin: 0;
@@ -567,8 +672,22 @@ export default {
   .rate {
     margin-bottom: 30px;
   }
-  #card {
+  #user-rating-label {
+    width: 60px;
+    font-size: 1.5rem;
+    left: -3px;
+    top: 45px;
+  }
+  .card {
     padding: 3rem;
+  }
+  #revenue-card {
+    font-size: 3.5rem;
+  }
+}
+@media (max-width: 400px) {
+  #revenue-card {
+    font-size: 3rem;
   }
 }
 @media (max-width: 1200px) {

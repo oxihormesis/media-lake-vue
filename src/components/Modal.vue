@@ -1,8 +1,8 @@
 <template id="modal-template">
   <transition name="modal">
     <div class="modal-mask">
-      <div class="modal-wrapper" @click="$emit('close')">
-        <div class="modal-container col-11 col-md-4 col-lg-3" @click.stop="">
+      <div class="modal-wrapper">
+        <div class="modal-container col-11 col-sm-9 col-md-6 col-lg-5">
           <button class="modal-default-button" @click="$emit('close')">
             <span class="material-icons-outlined">cancel</span>
           </button>
@@ -10,10 +10,11 @@
             <slot name="header">Header</slot>
           </div>
           <div class="modal-body">
-            <slot name="body">Body</slot>
+            <slot name="body"></slot>
+            <slot name="customContent1"></slot>
           </div>
           <div class="justify-content-center modal-footer">
-            <slot name="body2">Footer</slot>
+            <slot name="footer"></slot>
           </div>
         </div>
       </div>
@@ -23,7 +24,7 @@
 
 <script>
 export default {
-  name: "Modal"
+  name: "Modal",
 };
 </script>
 
@@ -31,18 +32,15 @@ export default {
 .modal-mask {
   position: fixed;
   z-index: 9998;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  display: table;
   transition: opacity 0.3s ease;
 }
 
 .modal-wrapper {
-  display: table-cell;
   vertical-align: middle;
+  margin-top: 30vh;
 }
 
 .modal-container {
@@ -64,7 +62,8 @@ export default {
 }
 
 .modal-body {
-  /* margin: 20px 0; */
+  display: flex;
+  justify-content: center;
 }
 
 .modal-default-button {

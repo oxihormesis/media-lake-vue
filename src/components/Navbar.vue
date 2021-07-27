@@ -55,10 +55,13 @@
         </b-nav-item-dropdown>
 
         <b-nav-item class="user" right v-else-if="!getCurrentSessionId">
-          <a id="show-modal" @click="showModal = true">
+          <a id="show-modal" @click="showAuthModal = true">
             <span>{{ $t("sign_in") }}</span>
           </a>
-          <auth-modal v-if="showModal" @close="showModal = false"></auth-modal>
+          <auth-modal
+            v-if="showAuthModal"
+            @close="showAuthModal = false"
+          ></auth-modal>
         </b-nav-item>
       </b-navbar-nav>
     </b-collapse>
@@ -77,7 +80,7 @@ export default {
   },
   data: function () {
     return {
-      showModal: false,
+      showAuthModal: false,
     };
   },
   computed: {
