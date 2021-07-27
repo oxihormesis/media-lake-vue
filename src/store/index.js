@@ -50,6 +50,8 @@ const store = new Vuex.Store({
     Account: null,
     FavoriteMovies: null,
     FavoriteTv: null,
+    RatedMovies: null,
+    RatedTv: null,
     MovieGenres: null,
     TvGenres: null,
     Movies: [],
@@ -93,6 +95,12 @@ const store = new Vuex.Store({
     },
     updateFavoriteTv(state, payload) {
       state.FavoriteTv = payload.data;
+    },
+    updateRatedMovies(state, payload) {
+      state.RatedMovies = payload.data;
+    },
+    updateRatedTv(state, payload) {
+      state.RatedTv = payload.data;
     },
     updateMovieGenres(state, payload) {
       state.MovieGenres = payload.data;
@@ -211,6 +219,7 @@ const store = new Vuex.Store({
         dispatch("getFavorites", {
           media_type: "tv"
         });
+        dispatch("getRatings")
       });
     },
     requestAccount({ commit }) {
@@ -245,6 +254,8 @@ const store = new Vuex.Store({
           commit("updateCurrentSessionId", { data: null });
           commit("updateFavoriteMovies", { data: null });
           commit("updateFavoriteTv", { data: null });
+          commit("updateRatedMovies", { data: null });
+          commit("updateRatedTv", { data: null });
         });
       };
       if (this.state.GuestSession) {
@@ -256,6 +267,8 @@ const store = new Vuex.Store({
           commit("updateCurrentSessionId", { data: empty });
           commit("updateFavoriteMovies", { data: null });
           commit("updateFavoriteTv", { data: null });
+          commit("updateRatedMovies", { data: null });
+          commit("updateRatedTv", { data: null });
         } else {
           deleteSession();
         }
@@ -287,9 +300,9 @@ const store = new Vuex.Store({
     },
     postFavoriteGetFavorites({ dispatch }, payload) {
       if (this.state.account) {
-        var account_option = this.state.account.acount_id;
+        var account_id_optional = this.state.account.acount_id;
       } else {
-        account_option = "/account_id";
+        account_id_optional = "/account_id";
       }
       if (!this.state.CurrentSessionId) {
         return Error("No CurrentSessionId");
@@ -297,7 +310,7 @@ const store = new Vuex.Store({
       Axios.post(
         baseURI +
         "/account" +
-        account_option +
+        account_id_optional +
         "/favorite" +
         keyQuery +
         sessionPrefix +
@@ -321,15 +334,15 @@ const store = new Vuex.Store({
     },
     getFavorites({ commit }, payload) {
       if (this.state.account) {
-        var account_option = this.state.account.acount_id;
+        var account_id_optional = this.state.account.acount_id;
       } else {
-        account_option = "/account_id";
+        account_id_optional = "/account_id";
       }
       let movieOrTv = payload.media_type == "movie" ? "/movies" : "/tv";
       Axios.get(
         baseURI +
         "/account" +
-        account_option +
+        account_id_optional +
         "/favorite" +
         movieOrTv +
         keyQuery +
@@ -350,24 +363,25 @@ const store = new Vuex.Store({
       });
     },
     postRatingGetRatings({ dispatch }, payload) {
-      if (!this.state.CurrentSessionId) {
-        var optionalSesh = "";
-      }
-      else if (this.state.GuestSession) {
-        if (this.state.CurrentSessionId == this.state.GuestSession.guest_session_id)
-          optionalSesh = guestSessionPrefix + this.state.CurrentSessionId
-      }
-      else if (this.state.Session) {
-        if (this.state.CurrentSessionId == this.state.Session.session_id)
-          optionalSesh = sessionPrefix + this.state.CurrentSessionId
-      }
+      // var optionalSesh
+      // if (!this.state.CurrentSessionId) {
+      //   optionalSesh = "";
+      // }
+      // else if (this.state.GuestSession) {
+      //   if (this.state.CurrentSessionId == this.state.GuestSession.guest_session_id)
+      //     optionalSesh = guestSessionPrefix + this.state.CurrentSessionId
+      // }
+      // else if (this.state.Session) {
+      //   if (this.state.CurrentSessionId == this.state.Session.session_id)
+      //     optionalSesh = sessionPrefix + this.state.CurrentSessionId
+      // }
       Axios.post(
         baseURI +
         "/" + payload.media_type + "/" +
         payload.media_id +
         "/rating" +
         keyQuery +
-        optionalSesh,
+        sessionPrefix + this.state.CurrentSessionId,
         {
           value: payload.rating,
         },
@@ -380,9 +394,44 @@ const store = new Vuex.Store({
       ).then(response => {
         let ratingConfirmed = response.data;
         console.log("rating Confirmation: ", ratingConfirmed);
-        dispatch("getRatings", { media_type: payload.media_type });
+        dispatch("getRatings");
       });
     },
+    getRatings({ commit }, payload) {
+      if (this.state.account) {
+        var account_id_optional = this.state.Account.id;
+      } else {
+        account_id_optional = "/account_id";
+      }
+
+
+      if (!this.state.CurrentSessionId) {
+        return new Error("There isn't a CurrentSessionId for getRatings");
+      }
+      // else {
+      //   if (this.state.GuestSession) {
+      //     if (this.state.CurrentSessionId == this.state.GuestSession.guest_session_id)
+      //       var requiredSesh = guestSessionPrefix + this.state.CurrentSessionId
+      //   }
+      //   else if (this.state.Session) {
+      //     if (this.state.CurrentSessionId == this.state.Session.session_id)
+      //       requiredSesh = sessionPrefix + this.state.CurrentSessionId
+      //   }
+
+      Axios.get(baseURI +
+        '/account/' + account_id_optional + '/rated/movies' + keyQuery + sessionPrefix + this.state.CurrentSessionId)
+        .then(response => {
+          let ratedMovies = response.data.results;
+          commit("updateRatedMovies", { data: ratedMovies });
+        });
+      Axios.get(baseURI +
+        '/account/' + account_id_optional + '/rated/tv' + keyQuery + sessionPrefix + this.state.CurrentSessionId)
+        .then(response => {
+          let ratedTV = response.data.results;
+          commit("updateRatedTv", { data: ratedTV });
+        });
+    },
+
 
     reqDetails({ commit }, payload) {
       console.log("payload: ", payload);
@@ -572,6 +621,8 @@ const store = new Vuex.Store({
     getAccount: state => state.Account,
     getFavoriteMovies: state => state.FavoriteMovies,
     getFavoriteTv: state => state.FavoriteTv,
+    getRatedMovies: state => state.RatedMovies,
+    getRatedTv: state => state.RatedTv,
     getMovieGenres: state => state.MovieGenres,
     getTvGenres: state => state.TvGenres,
     getDiscoverItems: state => state.DiscoverItems,
@@ -659,6 +710,8 @@ const store = new Vuex.Store({
         "Account",
         "FavoriteMovies",
         "FavoriteTv",
+        "RatedMovies",
+        "RatedTv",
         "MovieGenres",
         "TvGenres",
         "search"

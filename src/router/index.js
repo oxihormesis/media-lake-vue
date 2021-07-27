@@ -5,6 +5,8 @@ import Home from "../views/Home.vue";
 import Discover from "../views/Discover.vue";
 import SearchResults from "../views/SearchResults.vue";
 import ItemDetail from "../views/ItemDetail.vue";
+import Favorites from "../views/Favorites.vue"
+import Ratings from "../views/Ratings.vue"
 
 Vue.use(VueRouter);
 
@@ -18,6 +20,16 @@ const routes = [
     path: "/discover",
     name: "Discover",
     component: Discover
+  },
+  {
+    path: "/favorites",
+    name: "Favorites",
+    component: Favorites
+  },
+  {
+    path: "/ratings",
+    name: "Ratings",
+    component: Ratings
   },
   {
     path: "/search/:type/:data",
